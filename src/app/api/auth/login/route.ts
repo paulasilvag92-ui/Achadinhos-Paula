@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { comparePassword, signJWT, COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth'
+
+import { signJWT, COOKIE_NAME, COOKIE_MAX_AGE } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,12 +15,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Buscar usuário admin no banco
-    const admin = await prisma.adminUser.findUnique({
-      where: { email: email.toLowerCase().trim() },
-    })
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@admin.com'
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin'
 
-    if (!admin) {
+    // Validação usando as variáveis de ambiente
+    if (
+      email.toLowerCase().trim() !== adminEmail.toLowerCase().trim() ||
+      password !== adminPassword
+    ) {
       // Mensagem genérica para não revelar se o email existe
       return NextResponse.json(
         { error: 'Credenciais inválidas' },
@@ -28,21 +30,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar senha
-    const isValidPassword = await comparePassword(password, admin.password_hash)
-
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { error: 'Credenciais inválidas' },
-        { status: 401 }
-      )
-    }
-
     // Gerar JWT
-    const token = await signJWT({ adminId: admin.id, email: admin.email })
+    const token = await signJWT({ adminId: 1, email: adminEmail })
 
     // Retornar com cookie httpOnly
-    const response = NextResponse.json({ success: true, email: admin.email })
+    const response = NextResponse.json({ success: true, email: adminEmail })
 
     response.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
