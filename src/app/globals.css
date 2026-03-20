@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== CSS VARIABLES ===== */
+:root {
+  --color-primary: #FF6B35;
+  --color-primary-dark: #E85D2C;
+  --color-primary-light: #FF8C5A;
+  --color-accent: #FF2D55;
+  --color-bg: #FFF8F5;
+  --color-surface: #FFFFFF;
+  --color-text: #1A1A2E;
+  --color-muted: #6B7280;
+}
+
+/* ===== BASE ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bouncePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0e8e3 25%,
+    #ffe0d0 50%,
+    #f0e8e3 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ===== BOTÃO PRIMÁRIO ===== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #FF6B35 0%, #FF2D55 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.4);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
+  background: linear-gradient(135deg, #FF8C5A 0%, #FF4570 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  animation: bouncePulse 0.3s ease;
+}
+
+/* ===== CARD DE PRODUTO ===== */
+.product-card {
+  background: var(--color-surface);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(255, 107, 53, 0.08);
+  transition: all 0.3s ease;
+  animation: slideUp 0.4s ease-out both;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.18);
+}
+
+/* ===== BADGE SHOPEE ===== */
+.badge-shopee {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #FF6B35, #FF2D55);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== INPUTS E FORMULÁRIOS ===== */
+.input-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #F0E8E3;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  background: white;
+  color: var(--color-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+.input-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+/* ===== ADMIN LAYOUT ===== */
+.admin-sidebar {
+  background: linear-gradient(180deg, #1A1A2E 0%, #2D2D4E 100%);
+  min-height: 100vh;
+}
+
+/* ===== SCROLLBAR PERSONALIZADA ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF0EB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF6B35;
+  border-radius: 3px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 640px) {
+  .btn-primary {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    border-radius: 14px;
+  }
+}
