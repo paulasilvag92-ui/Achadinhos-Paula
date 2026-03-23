@@ -12,6 +12,7 @@ interface Product {
   image_url: string
   affiliate_link: string
   position: number
+  clicks: number
 }
 
 const EMPTY_FORM = { title: '', image_url: '', affiliate_link: '' }
@@ -383,6 +384,12 @@ export default function AdminPage() {
                               <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>
                                 {product.affiliate_link}
                               </p>
+                            </div>
+
+                            {/* Clicks */}
+                            <div className="flex-shrink-0 text-center px-3" style={{ color: '#1A1A2E' }}>
+                              <p className="text-sm font-bold">{product.clicks || 0}</p>
+                              <p className="text-[10px] uppercase font-semibold" style={{ color: '#9CA3AF' }}>Cliques</p>
                             </div>
 
                             {/* Ações */}

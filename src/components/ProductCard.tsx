@@ -9,6 +9,7 @@ interface Product {
   image_url: string
   affiliate_link: string
   position: number
+  clicks?: number
 }
 
 interface ProductCardProps {
@@ -75,7 +76,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         {/* Botão CTA */}
         <div className="mt-auto">
           <a
-            href={product.affiliate_link}
+            href={`/api/redirect/${product.id}`}
             target="_blank"
             rel="noopener noreferrer sponsored"
             className="btn-primary"
