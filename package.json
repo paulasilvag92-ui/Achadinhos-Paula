@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db:migrate": "prisma migrate dev --name update",
+    "db:push:FORBIDDEN": "echo 'ERRO: NUNCA USE DB PUSH. Use db:migrate para preservar os dados!' && exit 1",
     "postinstall": "prisma generate",
     "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
   },

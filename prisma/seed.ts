@@ -20,50 +20,59 @@ async function main() {
 
   console.log(`✅ Admin criado: ${admin.email}`)
 
+  // Criar categorias padrão
+  const categorias = ['Home', 'Maternidade', 'Eletronicos']
+  const categoryRecords = []
+  
+  for (const name of categorias) {
+    const cat = await prisma.category.upsert({
+      where: { name },
+      update: {},
+      create: { name }
+    })
+    categoryRecords.push(cat)
+  }
+  console.log(`✅ ${categoryRecords.length} categorias de exemplo criadas`)
+
   // Criar produtos de exemplo para visualização inicial
+  const homeCategory = categoryRecords.find(c => c.name === 'Home')?.id || 1
+  const techCategory = categoryRecords.find(c => c.name === 'Eletronicos')?.id || 1
+
   const produtos = [
     {
-      title: 'Fone Bluetooth Premium com Cancelamento de Ruído',
-      image_url: 'https://picsum.photos/seed/fone/400/400',
-      affiliate_link: 'https://shopee.com.br',
+      title: 'Fatiador de Legumes 16 em 1',
+      image_url: 'https://down-br.img.susercontent.com/file/br-11134207-81z1k-mh6x7kos49ac54.webp',
+      affiliate_link: 'https://s.shopee.com.br/3qIbuS4iQd',
       position: 1,
+      category_id: homeCategory,
     },
     {
-      title: 'Smartwatch Fitness com Monitor Cardíaco',
-      image_url: 'https://picsum.photos/seed/watch/400/400',
-      affiliate_link: 'https://shopee.com.br',
+      title: 'Percarbonato de Sodio Calisul - 100% Pure - Tira Manchas Roupas Brancas e Coloridas',
+      image_url: 'https://down-br.img.susercontent.com/file/br-11134207-81ztx-mkseiyuts0036c.webp',
+      affiliate_link: 'https://s.shopee.com.br/3B2v7FOJLK',
       position: 2,
+      category_id: homeCategory,
     },
     {
-      title: 'Carregador Turbo 65W Universal USB-C',
-      image_url: 'https://picsum.photos/seed/charger/400/400',
-      affiliate_link: 'https://shopee.com.br',
+      title: 'Mop com Refil Espuma Esponja de Pva',
+      image_url: 'https://down-br.img.susercontent.com/file/sg-11134201-7rd6i-lwrx7wmx7ly917.webp',
+      affiliate_link: 'https://s.shopee.com.br/7KsU56PjnU',
       position: 3,
+      category_id: homeCategory,
     },
     {
-      title: 'Caixa de Som Bluetooth à Prova d\'Água',
-      image_url: 'https://picsum.photos/seed/speaker/400/400',
-      affiliate_link: 'https://shopee.com.br',
+      title: '360°Suporte dobrável para celular a vácuo',
+      image_url: 'https://down-br.img.susercontent.com/file/br-11134207-7r98o-mdfy4c9l38opc1.webp',
+      affiliate_link: 'https://s.shopee.com.br/5q3gIR6c5u',
       position: 4,
-    },
-    {
-      title: 'Suporte Ergonômico para Notebook',
-      image_url: 'https://picsum.photos/seed/stand/400/400',
-      affiliate_link: 'https://shopee.com.br',
-      position: 5,
-    },
-    {
-      title: 'Anel de Luz LED para Selfie e Lives',
-      image_url: 'https://picsum.photos/seed/ring/400/400',
-      affiliate_link: 'https://shopee.com.br',
-      position: 6,
+      category_id: techCategory,
     },
   ]
 
   for (const produto of produtos) {
     await prisma.product.upsert({
       where: { id: produto.position },
-      update: {},
+      update: produto,
       create: produto,
     })
   }

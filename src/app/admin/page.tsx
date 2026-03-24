@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import toast, { Toaster } from 'react-hot-toast'
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'
 import Image from 'next/image'
+import AdminHeader from '@/components/AdminHeader'
 
 interface Product {
   id: number
@@ -13,9 +14,16 @@ interface Product {
   affiliate_link: string
   position: number
   clicks: number
+  category_id: number
+  category?: { id: number, name: string }
 }
 
-const EMPTY_FORM = { title: '', image_url: '', affiliate_link: '' }
+interface Category {
+  id: number
+  name: string
+}
+
+const EMPTY_FORM = { title: '', image_url: '', affiliate_link: '', category_id: 1 }
 
 export default function AdminPage() {
   const router = useRouter()
@@ -25,6 +33,7 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
 
   // Carregar produtos
   async function loadProducts() {
@@ -39,14 +48,23 @@ export default function AdminPage() {
     }
   }
 
-  useEffect(() => { loadProducts() }, [])
-
-  // Logout
-  async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    router.push('/admin/login')
-    router.refresh()
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/categories')
+      const data = await res.json()
+      setCategories(data)
+      if (data.length > 0 && form.category_id === 1) {
+        setForm(f => ({ ...f, category_id: data[0].id }))
+      }
+    } catch {
+      console.error('Erro ao carregar categorias')
+    }
   }
+
+  useEffect(() => { 
+    loadProducts()
+    loadCategories()
+  }, [])
 
   // Adicionar ou editar produto
   async function handleSubmit(e: FormEvent) {
@@ -89,6 +107,7 @@ export default function AdminPage() {
       title: product.title,
       image_url: product.image_url,
       affiliate_link: product.affiliate_link,
+      category_id: product.category_id || (categories.length > 0 ? categories[0].id : 1),
     })
     setEditingId(product.id)
     setShowForm(true)
@@ -155,40 +174,9 @@ export default function AdminPage() {
         style: { borderRadius: '10px', fontFamily: 'Inter, sans-serif', fontSize: '14px' }
       }} />
 
-      {/* HEADER DO ADMIN */}
-      <header className="sticky top-0 z-30 bg-white border-b px-4 py-3 flex items-center justify-between" style={{ borderColor: '#FFE0D0' }}>
-        <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm"
-            style={{ background: 'linear-gradient(135deg, #FF6B35, #FF2D55)' }}
-          >
-            A
-          </div>
-          <div>
-            <span className="font-bold text-sm" style={{ color: '#1A1A2E' }}>Admin</span>
-            <span className="text-xs ml-1" style={{ color: '#9CA3AF' }}>— Achadinhos da Paula</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <a
-            href="/"
-            target="_blank"
-            className="text-xs px-3 py-1.5 rounded-lg font-medium border"
-            style={{ color: '#6B7280', borderColor: '#E5E7EB' }}
-          >
-            Ver site
-          </a>
-          <button
-            onClick={handleLogout}
-            className="text-xs px-3 py-1.5 rounded-lg font-medium text-white"
-            style={{ background: '#EF4444' }}
-          >
-            Sair
-          </button>
-        </div>
-      </header>
+      <AdminHeader />
 
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 md:mt-0 mt-8">
 
         {/* BOTÃO ABRIR FORMULÁRIO */}
         {!showForm && (
@@ -236,7 +224,7 @@ export default function AdminPage() {
                   placeholder="https://..."
                   required
                 />
-                {form.image_url && (
+                {form.image_url && (form.image_url.startsWith('http://') || form.image_url.startsWith('https://') || form.image_url.startsWith('/')) && (
                   <div className="mt-2 relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100">
                     <Image
                       src={form.image_url}
@@ -260,6 +248,22 @@ export default function AdminPage() {
                   placeholder="https://shopee.com.br/..."
                   required
                 />
+              </div>
+
+              <div>
+                <label className="input-label" htmlFor="category">Categoria do Produto *</label>
+                <select
+                  id="category"
+                  value={form.category_id}
+                  onChange={(e) => setForm({ ...form, category_id: Number(e.target.value) })}
+                  className="input-field"
+                  required
+                >
+                  <option value="" disabled>Selecione uma categoria...</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex gap-3 mt-1">
@@ -375,6 +379,11 @@ export default function AdminPage() {
 
                             {/* Título */}
                             <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600`}>
+                                  {product.category?.name || 'Sem categoria'}
+                                </span>
+                              </div>
                               <p
                                 className="text-sm font-semibold truncate"
                                 style={{ color: '#1A1A2E' }}

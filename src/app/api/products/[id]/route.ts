@@ -18,13 +18,14 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { title, image_url, affiliate_link, position } = body
+    const { title, image_url, affiliate_link, position, category_id } = body
 
     const data: Record<string, string | number> = {}
     if (title !== undefined) data.title = String(title).trim()
     if (image_url !== undefined) data.image_url = String(image_url).trim()
     if (affiliate_link !== undefined) data.affiliate_link = String(affiliate_link).trim()
     if (position !== undefined) data.position = Number(position)
+    if (category_id !== undefined) data.category_id = Number(category_id)
 
     const product = await prisma.product.update({
       where: { id },

@@ -7,6 +7,7 @@ export async function GET() {
   try {
     const products = await prisma.product.findMany({
       orderBy: { position: 'asc' },
+      include: { category: true }
     })
     return NextResponse.json(products)
   } catch (error) {
@@ -22,11 +23,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { title, image_url, affiliate_link, position } = body
+    const { title, image_url, affiliate_link, position, category_id } = body
 
-    if (!title || !image_url || !affiliate_link) {
+    if (!title || !image_url || !affiliate_link || !category_id) {
       return NextResponse.json(
-        { error: 'Campos obrigatórios: title, image_url, affiliate_link' },
+        { error: 'Campos obrigatórios: title, image_url, affiliate_link, category_id' },
         { status: 400 }
       )
     }
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
         image_url: String(image_url).trim(),
         affiliate_link: String(affiliate_link).trim(),
         position: Number(pos),
+        category_id: Number(category_id),
       },
     })
 
