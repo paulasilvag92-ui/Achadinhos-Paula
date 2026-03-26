@@ -1,6 +1,22 @@
+'use client'
+
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 
 export default function Header() {
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.site_logo) setLogoUrl(data.site_logo)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <header className="sticky top-0 z-40 w-full" style={{ background: 'white', boxShadow: '0 2px 16px rgba(255,107,53,0.1)' }}>
       <div className="max-w-6xl mx-auto px-4 py-3">
@@ -8,19 +24,24 @@ export default function Header() {
           {/* Área da Logo */}
           <div
             className="relative flex-shrink-0 rounded-xl overflow-hidden"
-            style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #FF6B35, #FF2D55)' }}
+            style={{ 
+              width: 48, height: 48, 
+              background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #FF6B35, #FF2D55)' 
+            }}
           >
-            {/* Quando tiver logo: substitua pelo <Image> abaixo
-            <Image
-              src="/logo.png"
-              alt="Achadinhos da Paula"
-              fill
-              className="object-cover"
-            />
-            */}
-            <div className="w-full h-full flex items-center justify-center text-white font-black text-lg">
-              A
-            </div>
+            {!loading && logoUrl ? (
+              <Image
+                src={logoUrl}
+                alt="Logo Achadinhos da Paula"
+                fill
+                className="object-contain"
+                sizes="48px"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white font-black text-lg">
+                A
+              </div>
+            )}
           </div>
 
           {/* Nome do site */}

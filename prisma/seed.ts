@@ -78,6 +78,19 @@ async function main() {
   }
 
   console.log(`✅ ${produtos.length} produtos de exemplo criados`)
+
+  // Iniciar configurações padrão
+  const siteLogo = await prisma.setting.upsert({
+    where: { key: 'site_logo' },
+    update: {},
+    create: {
+      key: 'site_logo',
+      value: ''
+    }
+  })
+
+  console.log('✅ Configurações padrão inseridas')
+
   console.log('')
   console.log('🎉 Seed concluído com sucesso!')
   console.log('   Login admin: admin@achadinhos.com')

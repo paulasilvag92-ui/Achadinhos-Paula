@@ -16,6 +16,7 @@ export default function AdminHeader() {
   const navLinks = [
     { name: 'Produtos', path: '/admin' },
     { name: 'Categorias', path: '/admin/categories' },
+    { name: 'Config', path: '/admin/settings' },
   ]
 
   return (
