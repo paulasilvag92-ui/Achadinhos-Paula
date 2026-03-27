@@ -9,7 +9,7 @@ export default function AdminSettingsPage() {
   const [logoUrl, setLogoUrl] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Carregar as configurações
@@ -58,7 +58,7 @@ export default function AdminSettingsPage() {
       }
 
       toast.success('✅ Logo atualizada com sucesso!')
-      
+
       // Atualizar no preview forçando cache busting simples visual,
       // pois senão o browser pode usar imagem antiga do cache se nome colidir (resolvido por usar Date.now() no backend)
       setLogoUrl(data.url)
@@ -88,15 +88,15 @@ export default function AdminSettingsPage() {
           style={{ boxShadow: '0 4px 12px rgba(255,107,53,0.06)', borderColor: '#F0E8E3' }}
         >
           <div className="flex flex-col md:flex-row gap-8">
-            
+
             {/* Visualização da Logo */}
             <div className="flex-shrink-0 flex flex-col gap-3 items-center justify-center">
               <span className="text-sm font-semibold" style={{ color: '#6B7280' }}>Logo Padrão</span>
-              
+
               <div
                 className="relative flex items-center justify-center rounded-2xl overflow-hidden"
-                style={{ 
-                  width: 120, height: 120, 
+                style={{
+                  width: 120, height: 120,
                   background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #FF6B35, #FF2D55)',
                   border: logoUrl ? '2px dashed #D1D5DB' : 'none'
                 }}
@@ -116,7 +116,7 @@ export default function AdminSettingsPage() {
 
                 {uploading && (
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                     <span className="text-white font-bold text-sm">⏳</span>
+                    <span className="text-white font-bold text-sm">⏳</span>
                   </div>
                 )}
               </div>

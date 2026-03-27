@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthPayload, unauthorizedResponse } from '@/lib/api-auth'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
-import { existsSync } from 'fs'
+import { put } from '@vercel/blob'
 
 export async function POST(request: NextRequest) {
   // Autenticação de Admin
@@ -28,27 +26,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'A imagem deve ter no máximo 2MB' }, { status: 400 })
     }
 
-    // Processar arquivo
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Caminho local de upload public/uploads
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads')
-    
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true })
-    }
-
-    // Nome e extensão do arquivo seguro (substitui existente)
+    // Gerar um nome de arquivo único
     const ext = file.name.split('.').pop() || 'png'
     const fileName = `logo-${Date.now()}.${ext}`
-    const filePath = path.join(uploadDir, fileName)
 
-    // Salva arquivo no disco local
-    await writeFile(filePath, buffer)
+    // Fazer upload para o Vercel Blob Storage
+    const blob = await put(fileName, file, {
+      access: 'public',
+      addRandomSuffix: true,
+    })
 
-    // Caminho público acessível pela web
-    const publicUrl = `/uploads/${fileName}`
+    // URL pública fornecida pelo Vercel Blob
+    const publicUrl = blob.url
 
     // Salva ou atualiza configuração no banco de dados
     await prisma.setting.upsert({
@@ -60,6 +49,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, url: publicUrl })
   } catch (error) {
     console.error('[POST /api/settings/logo]:', error)
-    return NextResponse.json({ error: 'Erro ao fazer upload da logo' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro ao fazer upload da logo para o Vercel Blob' }, { status: 500 })
   }
 }

@@ -23,7 +23,7 @@ async function main() {
   // Criar categorias padrão
   const categorias = ['Home', 'Maternidade', 'Eletronicos']
   const categoryRecords = []
-  
+
   for (const name of categorias) {
     const cat = await prisma.category.upsert({
       where: { name },

@@ -13,7 +13,7 @@ export default function Header() {
       .then(data => {
         if (data.site_logo) setLogoUrl(data.site_logo)
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false))
   }, [])
 
@@ -24,9 +24,9 @@ export default function Header() {
           {/* Área da Logo */}
           <div
             className="relative flex-shrink-0 rounded-xl overflow-hidden"
-            style={{ 
-              width: 48, height: 48, 
-              background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #FF6B35, #FF2D55)' 
+            style={{
+              width: 48, height: 48,
+              background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #FF6B35, #FF2D55)'
             }}
           >
             {!loading && logoUrl ? (
